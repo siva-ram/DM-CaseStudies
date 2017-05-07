@@ -1,0 +1,27 @@
+TransFood <- read.csv('Assoc.csv')
+TransFood <- TransFood[, -1]
+TransFood <- as(as.matrix(TransFood), "transactions")
+library(arules)
+summary(TransFood)
+itemFrequencyPlot(TransFood,topN=20)
+basket_rules <- apriori(TransFood,parameter = list(sup = 0.001, conf = 0.5,target="rules"))
+summary(basket_rules)
+inspect(head(basket_rules))
+
+inspect(subset(basket_rules, lift>5))
+Bwlhs <- subset(basket_rules, subset = lhs %in% "Bottled.WaterFood" & lift>5)
+cheeslhs <- subset(basket_rules, subset = lhs %in% "Slice.of.CheeseFood" & lift>5)
+MedDrlhs <- subset(basket_rules, subset = lhs %in% "Medium.DrinkFood" & lift>5)
+Smadrlhs <- subset(basket_rules, subset = lhs %in% "Small.DrinkFood" & lift>5)
+pepplhs <- subset(basket_rules, subset = lhs %in% "Slice.of.PeppFood" & lift>5)
+inspect(Bwlhs)
+inspect(cheeslhs)
+inspect(MedDrlhs)
+
+install.packages('arulesViz')
+library('arulesViz')
+plot(basket_rules)
+plot(basket_rules, method="grouped")
+plot(head(sort(basket_rules, by="lift"), 5), method = "graph")
+
+T<- read.csv('Assoc.csv')
